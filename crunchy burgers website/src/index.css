@@ -1,0 +1,232 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+  Two colours, both lifted from the logo: the bun-cream circle and the maroon wordmark.
+  Night shift (after 22:00 Tbilisi time) swaps them, like the sign turning over.
+*/
+:root {
+  --paper: #eee8d8;
+  --ink: #5b141a;
+  --cheese: #f2b230;
+  --radius: 1rem;
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --muted: color-mix(in oklab, var(--ink) 6%, var(--paper));
+  --muted-foreground: color-mix(in oklab, var(--ink) 66%, var(--paper));
+  --primary: var(--ink);
+  --primary-foreground: var(--paper);
+  --border: color-mix(in oklab, var(--ink) 18%, var(--paper));
+  --ring: var(--ink);
+
+  color-scheme: light;
+}
+
+.dark {
+  --paper: #1d0709;
+  --ink: #eee8d8;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-cheese: var(--cheese);
+
+  --font-display: "Anybody", "Noto Sans Georgian", ui-sans-serif, sans-serif;
+  --font-sans: "Schibsted Grotesk", "Noto Sans Georgian", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "DM Mono", "Noto Sans Georgian", ui-monospace, monospace;
+
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-lg: var(--radius);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    background-color: var(--background);
+    color: var(--foreground);
+    transition:
+      background-color 0.6s ease,
+      color 0.6s ease;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground;
+    transition: inherit;
+  }
+
+  ::selection {
+    background: var(--cheese);
+    color: #5b141a;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  /* Display type is "smashed": heavy and pushed wide, lowercase like the logo. */
+  .type-display {
+    font-family: var(--font-display);
+    font-variation-settings:
+      "wght" 800,
+      "wdth" 125;
+    letter-spacing: -0.02em;
+    line-height: 0.92;
+    text-transform: lowercase;
+  }
+
+  /* Mkhedruli has tall ascenders and deep descenders; give Georgian lines more room. */
+  :lang(ka) .type-display {
+    line-height: 1.1;
+    letter-spacing: 0;
+  }
+
+  .type-display-soft {
+    font-family: var(--font-display);
+    font-variation-settings:
+      "wght" 650,
+      "wdth" 112;
+    letter-spacing: -0.01em;
+    text-transform: lowercase;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    color: var(--muted-foreground);
+    text-transform: lowercase;
+  }
+
+  /* The signature: the word drops, gets pressed flat and wide, then settles. */
+  .smash {
+    display: inline-block;
+    transform-origin: 50% 100%;
+    font-variation-settings:
+      "wght" 900,
+      "wdth" 132;
+    animation: smash 1.15s cubic-bezier(0.2, 0.7, 0.2, 1) 0.15s both;
+  }
+
+  .smash-sm {
+    display: inline-block;
+    transform-origin: 50% 100%;
+    animation: smash-sm 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .status-dot {
+    position: relative;
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--cheese);
+  }
+
+  .status-dot[data-open="false"] {
+    background: var(--muted-foreground);
+  }
+
+  .status-dot[data-open="true"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: inherit;
+    animation: sizzle 2.4s ease-out infinite;
+  }
+
+  /* Receipt edge for the tray. */
+  .ticket-edge {
+    height: 10px;
+    background: radial-gradient(circle at 6px -2px, transparent 6px, var(--muted) 6.5px) 0 0 / 12px 10px repeat-x;
+  }
+}
+
+@keyframes smash {
+  0% {
+    opacity: 0;
+    transform: translateY(-45%) scaleY(1.08);
+    font-variation-settings:
+      "wght" 900,
+      "wdth" 50;
+  }
+  38% {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+    font-variation-settings:
+      "wght" 900,
+      "wdth" 50;
+  }
+  54% {
+    transform: scaleY(0.78);
+    font-variation-settings:
+      "wght" 900,
+      "wdth" 148;
+  }
+  72% {
+    transform: scaleY(1.04);
+  }
+  100% {
+    transform: scaleY(1);
+    font-variation-settings:
+      "wght" 900,
+      "wdth" 132;
+  }
+}
+
+@keyframes smash-sm {
+  0% {
+    transform: scaleY(1.12) scaleX(0.9);
+  }
+  45% {
+    transform: scaleY(0.82) scaleX(1.12);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes sizzle {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  70%,
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .smash,
+  .smash-sm,
+  .status-dot[data-open="true"]::after {
+    animation: none;
+  }
+}

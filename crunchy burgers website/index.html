@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MOB — smash burgers, Tbilisi</title>
+    <meta
+      name="description"
+      content="MOB smash burgers on Mikheili Tsinamdzghvrishvili St, Tbilisi. Open every day until 5 am. Dine in, takeaway or delivery."
+    />
+    <meta name="theme-color" content="#eee8d8" />
+    <link rel="icon" type="image/png" href="/logo-64.png" />
+    <link rel="apple-touch-icon" href="/logo-384.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,400..900&family=DM+Mono:wght@400;500&family=Noto+Sans+Georgian:wdth,wght@62.5..100,400..900&family=Schibsted+Grotesk:wght@400..700&display=swap"
+    />
+
+    <!-- Pick day/night before first paint so the page doesn't flash. Mirrors src/lib/hours.ts. -->
+    <script>
+      (function () {
+        try {
+          var saved = JSON.parse(localStorage.getItem("mob-theme") || "null");
+          var hour = Number(
+            new Intl.DateTimeFormat("en-GB", {
+              timeZone: "Asia/Tbilisi",
+              hour: "numeric",
+              hourCycle: "h23",
+            }).format(new Date()),
+          );
+          var night = saved === "night" || (saved !== "day" && (hour >= 22 || hour < 5));
+          if (night) document.documentElement.classList.add("dark");
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
